@@ -16,7 +16,7 @@
       <scope value="GLOBAL" />
       <destination value="FILE" />
       <format value="EXCEL" />
-      <charset value="UTF-8" />
+      <charset value="GBK" />
     </export-instructions>
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -94,7 +94,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="$PROJECT_DIR$/../../../gj.db" schema="main" />
+            <file path="F:/../../gj.db" schema="main" />
           </files>
           <os-authentication value="false" />
           <empty-password value="false" />

@@ -13,7 +13,7 @@ public class UseConfig {
     Long id;
     int station;//站点号
     String line_chinese_name;//线路中文名
-    String line;//线路号 6位
+    String line;//线路号 4位
     String driverNo;//司机号
     int WxTx_Id;////微信订单号 0-999999
 
@@ -44,24 +44,27 @@ public class UseConfig {
         return this.station;
     }
 
-    public void setStation(int station) {
+    public UseConfig setStation(int station) {
         this.station = station;
+        return this;
     }
 
     public String getLine_chinese_name() {
         return this.line_chinese_name;
     }
 
-    public void setLine_chinese_name(String line_chinese_name) {
+    public UseConfig setLine_chinese_name(String line_chinese_name) {
         this.line_chinese_name = line_chinese_name;
+        return this;
     }
 
     public String getLine() {
         return this.line;
     }
 
-    public void setLine(String line) {
+    public UseConfig setLine(String line) {
         this.line = line;
+        return this;
     }
 
     public String getDriverNo() {
@@ -79,5 +82,6 @@ public class UseConfig {
     public void setWxTx_Id(int WxTx_Id) {
         this.WxTx_Id = WxTx_Id;
     }
+
 
 }

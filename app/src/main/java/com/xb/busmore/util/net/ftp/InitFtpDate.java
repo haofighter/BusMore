@@ -4,7 +4,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.xb.busmore.BuildConfig;
 import com.xb.busmore.base.App;
 import com.xb.busmore.base.rx.RxBus;
 import com.xb.busmore.base.rx.RxMessage;
@@ -14,10 +13,9 @@ import com.xb.busmore.entity.LineInfoDown;
 import com.xb.busmore.entity.LineInfoUp;
 import com.xb.busmore.entity.LinePriceInfo;
 import com.xb.busmore.entity.LineStation;
-import com.xb.busmore.entity.car.CarConfig;
 import com.xb.busmore.entity.car.CarRunInfo;
 import com.xb.busmore.entity.car.UseConfig;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.moudle.qrCode.entity.FTPEntity;
 import com.xb.busmore.util.net.ftpUtils.FTP;
 import com.xb.busmore.util.net.prase.FileByte;
@@ -40,7 +38,7 @@ public class InitFtpDate {
 
     private InitFtpDate() {
         if (ftp == null) {
-            FTPEntity ftpEntity = DBManager.getInstance().getFTP();
+            FTPEntity ftpEntity = PosManager.getInstance().getFTP();
             ftp = new FTP().setHostName(ftpEntity.getI()).setServerPort(ftpEntity.getP()).setUserName(ftpEntity.getU()).setPassword(ftpEntity.getPsw());
         }
     }
@@ -117,6 +115,7 @@ public class InitFtpDate {
                     downloadDetailLine(lineNo);
                 } else {
                     ftp.downcount = 0;
+                    //解析线路文件
                     praseLineInfo(file);
                 }
             } else {
@@ -141,7 +140,7 @@ public class InitFtpDate {
         Log.e("InitFtpDate", "praseLineInfo(InitFtpDate.java:124)" + alllineStr);
         LineInfoUp lineInfoup = new Gson().fromJson(alllineStr, LineInfoUp.class);
         LineInfoDown lineInfoDown = new Gson().fromJson(alllineStr, LineInfoDown.class);
-        DBManager.getInstance().updateLineInfo(lineInfoup);//保存线路文件相关
+        PosManager.getInstance().updateLineInfo(lineInfoup);//保存线路文件相关
 
         /******************************解析站点********************************/
         List<LineStation> uplineStationList = lineInfoDown.getUp_position();
@@ -163,9 +162,6 @@ public class InitFtpDate {
             downlineStationList.set(i, downStation);
         }
         lineInfoDown.setDown_position(downlineStationList);
-
-        DBManager.getInstance().updateStation(lineInfoDown, lineInfoup.getLine());
-        /**************************************************************/
         /****************************解析票价**********************************/
         List<LinePriceInfo> upLinePrice = lineInfoDown.getUp_price();
         for (int i = 0; i < upLinePrice.size(); i++) {
@@ -187,8 +183,9 @@ public class InitFtpDate {
             downLinePrice.set(i, downPrice);
         }
         lineInfoDown.setDown_price(downLinePrice);
-        DBManager.getInstance().updatePrice(lineInfoDown, lineInfoup.getLine());
-//        /**************************************************************/
+        /*************************解析完成*************************************/
+        //解析线路文件成功 对参数进行数据库保存
+        PosManager.getInstance().updateStationInfo(lineInfoDown, lineInfoup.getLine());
         //设置线路信息
         setLine(lineInfoup, lineInfoDown);
     }
@@ -196,21 +193,23 @@ public class InitFtpDate {
 
     //设置线路信息
     public void setLine(LineInfoUp lineInfoUp, LineInfoDown lineInfoDown) {
+        UseConfig useConfig = PosManager.getInstance().setUseConfig(
+                PosManager.getInstance().getUseConfig()
+                        .setLine(lineInfoUp.getLine())
+                        .setLine_chinese_name(lineInfoUp.getChinese_name()).
+                        setStation(1));
 
-        UseConfig useConfig = PosManager.getInstance().getUseConfig();
-        useConfig.setLine(lineInfoUp.getLine());
-        useConfig.setLine_chinese_name(lineInfoUp.getChinese_name());
-        useConfig.setStation(1);
-        PosManager.getInstance().setUseConfig(useConfig);
+        CarRunInfo carRunInfo = PosManager.getInstance().setCarRunInfo(PosManager.getInstance().getCarRunInfo()
+                .setPrice(PosManager.getPrice(1, PosManager.getInstance().getCarRunInfo().getDiraction()))
+                .setCoefficient(lineInfoUp.getCoefficient()));
 
-        CarRunInfo carRunInfo = PosManager.getInstance().getCarRunInfo();
-        carRunInfo.setPrice(PosManager.getPrice(1, PosManager.getInstance().getCarRunInfo().getDiraction()));
-        PosManager.getInstance().setCarRunInfo(carRunInfo);
+        PosManager.getInstance().setCarConfig(PosManager.getInstance().getCarConfig().setLine(lineInfoUp.getLine()));
+
         SoundPoolUtil.play(22);
         BusToast.showToast(App.getInstance(), "线路号:" + useConfig.getLine() + "\n线路名:" + useConfig.getLine_chinese_name()
                 + "\n机具状态:" + (carRunInfo.getDeviceStatus() == 0 ? "上车机" : (carRunInfo.getDeviceStatus() == 1 ? "上下车机" : "下车机"))
                 + "\n变站模式:" + (carRunInfo.getBianStatu() == 0 ? "手动变站" : "自动变站")
-                +"\n车辆号:"+PosManager.getInstance().getCarConfig().getBusNo(), true);
+                + "\n车辆号:" + PosManager.getInstance().getCarConfig().getBusNo(), true);
     }
 
 }

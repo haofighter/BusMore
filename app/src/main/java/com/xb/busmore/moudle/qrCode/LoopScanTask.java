@@ -11,7 +11,7 @@ import com.szxb.jni.libszxb;
 import com.xb.busmore.base.App;
 import com.xb.busmore.base.rx.RxBus;
 import com.xb.busmore.base.rx.RxMessage;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.moudle.unionpay.dispose.BankQRParse;
 import com.xb.busmore.moudle.unionpay.dispose.BankResponse;
 import com.xb.busmore.util.BusToast;
@@ -56,10 +56,10 @@ public class LoopScanTask extends Service {
                     if (barcode < 0) {
                         LogcatEvent.getInstance().WritingCom();
                     }
-                    Log.e("LoopScanTask", "run(LoopScanTask.java:59) 二维码 barcode=" + barcode);
+                    Log.i("MI  info","run(LoopScanTask.java)59)二维码 barcode=" + barcode);
                     if (barcode > 0) {
                         String result = new String(recv, 0, barcode);
-                        Log.e("LoopScanTask", "run(LoopScanTask.java:62) 二维码 原串" + result);
+                        Log.i("MI  info","run(LoopScanTask.java)59)二维码 原串" + result);
                         if (PosScanManager.isTenQRcode(result) && PosManager.getInstance().getSign()) {//腾讯二维码
                             if (!Utils.checkQR(System.currentTimeMillis(), lastTime)) return;
                             if (TextUtils.equals(result, tem)) {
@@ -80,7 +80,6 @@ public class LoopScanTask extends Service {
                             BankQRParse qrParse = new BankQRParse();
                             //TODO 银联卡目前无价格信息后续处理
 //                            response = qrParse.parseResponse(App.getPosManager().getUnionPayPrice(), result);
-//
 //                            if (response.getResCode() > 0) {
 //                                BusToast.showToast(App.getInstance(), response.getMsg(), true);
 //                            } else {
@@ -97,7 +96,8 @@ public class LoopScanTask extends Service {
                 } catch (Exception e) {
                     RxBus.getInstance().post(new RxMessage(RxMessage.SOFTWARE_EXCEPTION));
                     e.printStackTrace();
-                    Log.e("LoopScanTask", "run(LoopScanTask.java:99)扫码出现异常,异常原因" + e.toString());
+
+                    Log.i("LoopScanTask", "run(LoopScanTask.java:99)扫码出现异常,异常原因" + e.toString());
                 }
 
             }

@@ -110,48 +110,12 @@ public class FTP {
     // -------------------------------------------------------文件上传方法------------------------------------------------
 
     /**
-     * 上传多个文件.
-     * <p>
-     * <p>
-     * 本地文件
-     *
-     * @param remotePath FTP目录
-     * @param listener   监听器
-     * @throws IOException
-     */
-    public void uploadMultiFile(LinkedList<File> fileList, String remotePath,
-                                UploadProgressListener listener) throws IOException {
-
-        // 上传之前初始化
-        this.uploadBeforeOperate(remotePath, listener);
-
-        boolean flag;
-        for (File singleFile : fileList) {
-            flag = uploadingSingle(singleFile, listener);
-
-            if (flag) {
-                listener.onUploadProgress(FTP_UPLOAD_SUCCESS, 0,
-                        singleFile);
-            } else {
-                listener.onUploadProgress(FTP_UPLOAD_FAIL, 0,
-                        singleFile);
-            }
-
-            Log.d("init", flag + singleFile.toString());
-        }
-
-        // 上传完成之后关闭连接
-        this.uploadAfterOperate(listener);
-    }
-
-    /**
      * 上传单个文件.
      *
-     * @param localFile 本地文件
      * @return true上传成功, false上传失败
      * @throws IOException
      */
-    public boolean uploadingSingle(File localFile,
+    public boolean uploadingSingle(String filePath, String fileName, String remotePath,
                                    UploadProgressListener listener) throws IOException {
         boolean flag = false;
         // 不带进度的方式
@@ -161,16 +125,36 @@ public class FTP {
         // flag = ftpClient.storeFile(localFile.getName(), inputStream);
         // // 关闭文件流
         // inputStream.close();
+        this.uploadBeforeOperate(remotePath, listener);
+        File file;
+        try {
+            file = new File(filePath + fileName);
+            // 带有进度的方式
+            BufferedInputStream buffIn = new BufferedInputStream(
+                    new FileInputStream(file));
+            ProgressInputStream progressInput = new ProgressInputStream(buffIn,
+                    listener, file);
+            flag = ftpClient.storeFile(file.getName(), progressInput);
+            buffIn.close();
+        } catch (Exception e) {
+            return false;
+        }
+        try {
+            if (ftpClient.listFiles(fileName)[0].getSize() == file.length()) {
 
-        // 带有进度的方式
-        BufferedInputStream buffIn = new BufferedInputStream(
-                new FileInputStream(localFile));
-        ProgressInputStream progressInput = new ProgressInputStream(buffIn,
-                listener, localFile);
-        flag = ftpClient.storeFile(localFile.getName(), progressInput);
-        buffIn.close();
+                Log.i("MI  info", "uploadingSingle(FTP.java)181)  校验服务器文件成功");
+                listener.onUploadProgress(FTP.FTP_UPLOAD_SUCCESS, file.length(), file);
+                return true;
+            } else {
 
-        return flag;
+                Log.i("MI  info", "uploadingSingle(FTP.java)181)  校验服务器文件失败");
+                listener.onUploadProgress(FTP.FTP_UPLOAD_FAIL, ftpClient.listFiles(fileName)[0].getSize(), null);
+                return false;
+            }
+        } catch (Exception e) {
+            Log.i("MI  info", "uploadingSingle(FTP.java)182) 校验服务器文件错误");
+            return false;
+        }
     }
 
     /**

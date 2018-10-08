@@ -30,6 +30,7 @@ public class CarRunInfoDao extends AbstractDao<CarRunInfo, Long> {
         public final static Property BianStatu = new Property(3, int.class, "bianStatu", false, "BIAN_STATU");
         public final static Property Price = new Property(4, int.class, "price", false, "PRICE");
         public final static Property Sign = new Property(5, boolean.class, "sign", false, "SIGN");
+        public final static Property Coefficient = new Property(6, String.class, "coefficient", false, "COEFFICIENT");
     }
 
 
@@ -50,7 +51,8 @@ public class CarRunInfoDao extends AbstractDao<CarRunInfo, Long> {
                 "\"DEVICE_STATUS\" INTEGER NOT NULL ," + // 2: deviceStatus
                 "\"BIAN_STATU\" INTEGER NOT NULL ," + // 3: bianStatu
                 "\"PRICE\" INTEGER NOT NULL ," + // 4: price
-                "\"SIGN\" INTEGER NOT NULL );"); // 5: sign
+                "\"SIGN\" INTEGER NOT NULL ," + // 5: sign
+                "\"COEFFICIENT\" TEXT);"); // 6: coefficient
     }
 
     /** Drops the underlying database table. */
@@ -72,6 +74,11 @@ public class CarRunInfoDao extends AbstractDao<CarRunInfo, Long> {
         stmt.bindLong(4, entity.getBianStatu());
         stmt.bindLong(5, entity.getPrice());
         stmt.bindLong(6, entity.getSign() ? 1L: 0L);
+ 
+        String coefficient = entity.getCoefficient();
+        if (coefficient != null) {
+            stmt.bindString(7, coefficient);
+        }
     }
 
     @Override
@@ -87,6 +94,11 @@ public class CarRunInfoDao extends AbstractDao<CarRunInfo, Long> {
         stmt.bindLong(4, entity.getBianStatu());
         stmt.bindLong(5, entity.getPrice());
         stmt.bindLong(6, entity.getSign() ? 1L: 0L);
+ 
+        String coefficient = entity.getCoefficient();
+        if (coefficient != null) {
+            stmt.bindString(7, coefficient);
+        }
     }
 
     @Override
@@ -102,7 +114,8 @@ public class CarRunInfoDao extends AbstractDao<CarRunInfo, Long> {
             cursor.getInt(offset + 2), // deviceStatus
             cursor.getInt(offset + 3), // bianStatu
             cursor.getInt(offset + 4), // price
-            cursor.getShort(offset + 5) != 0 // sign
+            cursor.getShort(offset + 5) != 0, // sign
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // coefficient
         );
         return entity;
     }
@@ -115,6 +128,7 @@ public class CarRunInfoDao extends AbstractDao<CarRunInfo, Long> {
         entity.setBianStatu(cursor.getInt(offset + 3));
         entity.setPrice(cursor.getInt(offset + 4));
         entity.setSign(cursor.getShort(offset + 5) != 0);
+        entity.setCoefficient(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     @Override

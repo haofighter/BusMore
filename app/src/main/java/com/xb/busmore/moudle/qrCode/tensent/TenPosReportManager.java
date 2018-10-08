@@ -8,8 +8,7 @@ import com.xb.busmore.base.App;
 import com.xb.busmore.base.rx.RxBus;
 import com.xb.busmore.base.rx.RxMessage;
 import com.xb.busmore.dao.manage.DBManager;
-import com.xb.busmore.entity.PosRecord;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.util.BusToast;
 
 
@@ -55,9 +54,9 @@ public class TenPosReportManager {
                 "posScan(TenPosReportManager.java:37)init=" + init + "key_id=" + key_id + "open_id=" + open_id + "mac_root_id=" + mac_root_id);
         int verify = 0;
         if (!TextUtils.isEmpty(open_id)) {
-            if (DBManager.getInstance().filterOpenID(open_id)) {
+            if (PosManager.getInstance().filterOpenID(open_id)) {
                 BusToast.showToast(App.getInstance(), "禁止频繁刷码", false);
-            } else if (DBManager.getInstance().filterBlackName(open_id)) {
+            } else if (PosManager.getInstance().filterBlackName(open_id)) {
                 //是黑名单
                 RxBus.getInstance().post(new RxMessage(RxMessage.QR_ERROR));
             } else {

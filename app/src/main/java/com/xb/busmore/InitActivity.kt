@@ -1,22 +1,23 @@
 package com.xb.busmore
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.os.Environment
+import com.google.gson.Gson
 import com.xb.busmore.base.App
 import com.xb.busmore.base.BaseActivity
-import com.xb.busmore.base.rx.RxBus
 import com.xb.busmore.base.rx.RxMessage
+import com.xb.busmore.dao.manage.PosManager
+import com.xb.busmore.entity.OldConfig
 import com.xb.busmore.moudle.activity.HomeActivity
 import com.xb.busmore.moudle.key.LoopKeyEvent
-import com.xb.busmore.moudle.card.LoopCardThread
+import com.xb.busmore.moudle.card.single.LoopCardThread_SingleZB
 import com.xb.busmore.moudle.init.InitK21
 import com.xb.busmore.moudle.qrCode.LoopScanTask
 import com.xb.busmore.util.net.ftp.InitFtpDate
 import com.xb.busmore.util.ThreadScheduledExecutorUtil
+import com.xb.busmore.util.Utils
 import com.xb.busmore.util.sp.CommonSharedPreferences
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_init.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -42,6 +43,7 @@ class InitActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         info.append("初始化中\n")
         initAllLine()
+        getOldConfig()
         initK21()
     }
 
@@ -56,7 +58,7 @@ class InitActivity : BaseActivity() {
         runOnUiThread {
             CommonSharedPreferences.put("v", App.getInstance().getPakageVersion())
             ThreadScheduledExecutorUtil.getInstance().service
-                    .scheduleAtFixedRate(LoopCardThread(), 1000, 1000, TimeUnit.MILLISECONDS)
+                    .scheduleAtFixedRate(LoopCardThread_SingleZB(), 1000, 1000, TimeUnit.MILLISECONDS)
             runOnUiThread { info.append("刷卡已启动\n") }
 
             ThreadScheduledExecutorUtil.getInstance().service
@@ -66,7 +68,7 @@ class InitActivity : BaseActivity() {
             startService(Intent(this, LoopScanTask::class.java))
             runOnUiThread { info.append("扫码已启动\n") }
 
-            goToMainActivity()
+            Executors.newScheduledThreadPool(1).schedule({ goToMainActivity() }, 2, TimeUnit.SECONDS)
         }
     }
 
@@ -103,4 +105,23 @@ class InitActivity : BaseActivity() {
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
+
+
+    fun getOldConfig() {
+        var old = Gson().fromJson<OldConfig>(Utils.readSaveFile(Environment.getExternalStorageDirectory().toString() + "/config.txt"), OldConfig::class.java)
+        if (PosManager.getInstance().useConfig.line.equals("000000")) {
+            Executors.newScheduledThreadPool(1).schedule({
+                if (Utils.StringIsEmpty(old.line)) {
+                    InitFtpDate.getInstance().downloadDetailLine(old.lineName)
+                } else {
+                    InitFtpDate.getInstance().downloadDetailLine(old.line)
+                }
+                val string = Gson().toJson(PosManager.getInstance().carConfig)
+                Utils.byte2File(string.toByteArray(), Environment.getExternalStorageDirectory().toString(), "config.txt")
+            }, 0, TimeUnit.SECONDS)
+            PosManager.getInstance().carConfig = PosManager.getInstance().carConfig.setBusNo(old.busNo)
+        }
+    }
+
+
 }

@@ -5,7 +5,7 @@ import com.szxb.java8583.module.BankScanPay;
 import com.szxb.java8583.module.manager.BusllPosManage;
 import com.xb.busmore.entity.car.CarConfig;
 import com.xb.busmore.entity.car.UseConfig;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.moudle.unionpay.config.UnionConfig;
 import com.xb.busmore.moudle.unionpay.entity.UnionPayEntity;
 

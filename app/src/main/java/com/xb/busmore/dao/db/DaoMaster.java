@@ -21,38 +21,40 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        LineInfoUpDao.createTable(db, ifNotExists);
-        UseConfigDao.createTable(db, ifNotExists);
+        AllLineInfoDao.createTable(db, ifNotExists);
+        BlackListEntityDao.createTable(db, ifNotExists);
         CarConfigDao.createTable(db, ifNotExists);
         CarRunInfoDao.createTable(db, ifNotExists);
-        ScanInfoEntityDao.createTable(db, ifNotExists);
-        AllLineInfoDao.createTable(db, ifNotExists);
+        UseConfigDao.createTable(db, ifNotExists);
+        LineInfoUpDao.createTable(db, ifNotExists);
         LinePriceInfoDao.createTable(db, ifNotExists);
         LineStationDao.createTable(db, ifNotExists);
-        BlackListEntityDao.createTable(db, ifNotExists);
-        PublicKeyEntityDao.createTable(db, ifNotExists);
+        ScanInfoEntityDao.createTable(db, ifNotExists);
         FTPEntityDao.createTable(db, ifNotExists);
         MacKeyEntityDao.createTable(db, ifNotExists);
-        UnionPayEntityDao.createTable(db, ifNotExists);
+        PublicKeyEntityDao.createTable(db, ifNotExists);
         UnionAidEntityDao.createTable(db, ifNotExists);
+        UnionPayEntityDao.createTable(db, ifNotExists);
+        CardRecordDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        LineInfoUpDao.dropTable(db, ifExists);
-        UseConfigDao.dropTable(db, ifExists);
+        AllLineInfoDao.dropTable(db, ifExists);
+        BlackListEntityDao.dropTable(db, ifExists);
         CarConfigDao.dropTable(db, ifExists);
         CarRunInfoDao.dropTable(db, ifExists);
-        ScanInfoEntityDao.dropTable(db, ifExists);
-        AllLineInfoDao.dropTable(db, ifExists);
+        UseConfigDao.dropTable(db, ifExists);
+        LineInfoUpDao.dropTable(db, ifExists);
         LinePriceInfoDao.dropTable(db, ifExists);
         LineStationDao.dropTable(db, ifExists);
-        BlackListEntityDao.dropTable(db, ifExists);
-        PublicKeyEntityDao.dropTable(db, ifExists);
+        ScanInfoEntityDao.dropTable(db, ifExists);
         FTPEntityDao.dropTable(db, ifExists);
         MacKeyEntityDao.dropTable(db, ifExists);
-        UnionPayEntityDao.dropTable(db, ifExists);
+        PublicKeyEntityDao.dropTable(db, ifExists);
         UnionAidEntityDao.dropTable(db, ifExists);
+        UnionPayEntityDao.dropTable(db, ifExists);
+        CardRecordDao.dropTable(db, ifExists);
     }
 
     /**
@@ -71,20 +73,21 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(LineInfoUpDao.class);
-        registerDaoClass(UseConfigDao.class);
+        registerDaoClass(AllLineInfoDao.class);
+        registerDaoClass(BlackListEntityDao.class);
         registerDaoClass(CarConfigDao.class);
         registerDaoClass(CarRunInfoDao.class);
-        registerDaoClass(ScanInfoEntityDao.class);
-        registerDaoClass(AllLineInfoDao.class);
+        registerDaoClass(UseConfigDao.class);
+        registerDaoClass(LineInfoUpDao.class);
         registerDaoClass(LinePriceInfoDao.class);
         registerDaoClass(LineStationDao.class);
-        registerDaoClass(BlackListEntityDao.class);
-        registerDaoClass(PublicKeyEntityDao.class);
+        registerDaoClass(ScanInfoEntityDao.class);
         registerDaoClass(FTPEntityDao.class);
         registerDaoClass(MacKeyEntityDao.class);
-        registerDaoClass(UnionPayEntityDao.class);
+        registerDaoClass(PublicKeyEntityDao.class);
         registerDaoClass(UnionAidEntityDao.class);
+        registerDaoClass(UnionPayEntityDao.class);
+        registerDaoClass(CardRecordDao.class);
     }
 
     public DaoSession newSession() {

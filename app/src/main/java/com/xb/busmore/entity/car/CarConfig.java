@@ -24,11 +24,13 @@ public class CarConfig {
     String posSn;
     //备注
     String mark;
+    //线路号 4位
+    String line;
 
 
-    @Generated(hash = 668637602)
+    @Generated(hash = 178428416)
     public CarConfig(Long id, int GPS, Long time, String busNo, String unionTraNo,
-            String unionPos, String posSn, String mark) {
+                     String unionPos, String posSn, String mark, String line) {
         this.id = id;
         this.GPS = GPS;
         this.time = time;
@@ -37,6 +39,7 @@ public class CarConfig {
         this.unionPos = unionPos;
         this.posSn = posSn;
         this.mark = mark;
+        this.line = line;
     }
 
     @Generated(hash = 994675825)
@@ -112,6 +115,15 @@ public class CarConfig {
 
     public CarConfig setUnionPos(String unionPos) {
         this.unionPos = unionPos;
+        return this;
+    }
+
+    public String getLine() {
+        return this.line;
+    }
+
+    public CarConfig setLine(String line) {
+        this.line = line;
         return this;
     }
 

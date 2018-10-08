@@ -3,6 +3,7 @@ package com.xb.busmore.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 
 import com.xb.busmore.base.App;
@@ -100,6 +101,25 @@ public class Utils {
         return is;
     }
 
+    //读取文件类容转成string
+    public static String readSaveFile(String filename) {
+        FileInputStream inputStream;
+        StringBuilder sb = new StringBuilder("");
+        try {
+            inputStream = new FileInputStream(filename);
+            byte temp[] = new byte[1024];
+
+            int len = 0;
+            while ((len = inputStream.read(temp)) > 0){
+                sb.append(new String(temp, 0, len));
+            }
+            Log.d("msg", "readSaveFile: \n" + sb.toString());
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 
     /**
      * 根据byte数组，生成文件

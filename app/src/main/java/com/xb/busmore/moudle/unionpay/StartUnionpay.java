@@ -2,7 +2,7 @@ package com.xb.busmore.moudle.unionpay;
 
 import com.xb.busmore.base.App;
 import com.xb.busmore.entity.MifareGetCard;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.moudle.unionpay.dispose.BankCardParse;
 import com.xb.busmore.moudle.unionpay.dispose.BankQRParse;
 import com.xb.busmore.moudle.unionpay.dispose.BankResponse;

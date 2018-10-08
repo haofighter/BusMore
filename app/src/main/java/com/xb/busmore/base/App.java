@@ -15,9 +15,8 @@ import com.lilei.tool.tool.IToolInterface;
 import com.xb.busmore.BuildConfig;
 import com.xb.busmore.R;
 import com.xb.busmore.dao.manage.DBCore;
-import com.xb.busmore.dao.manage.DBManager;
 import com.xb.busmore.moudle.init.LocationService;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.util.Utils;
 
 import com.example.zhoukai.modemtooltest.ModemToolTest;

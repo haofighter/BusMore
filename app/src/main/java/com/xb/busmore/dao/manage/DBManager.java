@@ -65,7 +65,7 @@ public class DBManager {
 
     private static DBManager dbManager = new DBManager();
 
-    public static DBManager getInstance() {
+    static DBManager getInstance() {
         if (dbManager == null) {
             dbManager = new DBManager();
         }
@@ -77,7 +77,7 @@ public class DBManager {
      *
      * @return
      */
-    public CarConfig getCarConfig() {
+    CarConfig getCarConfig() {
         CarConfig carConfig = carConfigDao.queryBuilder().limit(1).unique();
         if (carConfig == null) {
             String mark = "";
@@ -93,7 +93,7 @@ public class DBManager {
                 mark = "公交";
             }
 
-            carConfig = new CarConfig(0l, 0, System.currentTimeMillis(), "未设置", "未设置", "未设置", "未设置", mark);
+            carConfig = new CarConfig(0l, 0, System.currentTimeMillis(), "未设置", "未设置", "未设置", "未设置", mark,"000000");
         }
         return carConfig;
     }
@@ -103,7 +103,7 @@ public class DBManager {
      *
      * @param carConfig
      */
-    public void updateCarConfig(CarConfig carConfig) {
+    void updateCarConfig(CarConfig carConfig) {
         carConfigDao.insertOrReplace(carConfig);
     }
 
@@ -112,7 +112,7 @@ public class DBManager {
      *
      * @return
      */
-    public UseConfig getUseConfig() {
+    UseConfig getUseConfig() {
         UseConfig useConfig = useConfigDao.queryBuilder().limit(1).unique();
         if (useConfig == null) {
             useConfig = new UseConfig(0l, 1, "请选择线路", "000000", "0000000", 0);
@@ -126,21 +126,23 @@ public class DBManager {
      *
      * @param useConfig
      */
-    public void updateUseConfig(UseConfig useConfig) {
+    UseConfig updateUseConfig(UseConfig useConfig) {
         useConfigDao.insertOrReplace(useConfig);
+        return useConfig;
     }
 
 
-    public CarRunInfo getCarRunInfo() {
+    CarRunInfo getCarRunInfo() {
         CarRunInfo carRunInfo = carRunInfoDao.queryBuilder().limit(1).unique();
         if (carRunInfo == null) {
-            carRunInfo = new CarRunInfo(0l, 0, 2, 0, 0, false);
+            carRunInfo = new CarRunInfo(0l, 0, 2, 0, 0, false, "100100100100100100100100100100100100100100100100100100100100");
         }
         return carRunInfo;
     }
 
-    public void updateCarRunInfo(CarRunInfo carRunInfo) {
+    CarRunInfo updateCarRunInfo(CarRunInfo carRunInfo) {
         carRunInfoDao.insertOrReplace(carRunInfo);
+        return carRunInfo;
     }
 
 
@@ -149,7 +151,7 @@ public class DBManager {
      *
      * @return
      */
-    public List<AllLineInfo> getLineInfo() {
+    List<AllLineInfo> getLineInfo() {
         return allLineInfoDao.queryBuilder().list();
     }
 
@@ -158,7 +160,7 @@ public class DBManager {
      *
      * @return
      */
-    public AllLineInfo getLineInfo(String lineNo) {
+    AllLineInfo getLineInfo(String lineNo) {
         String ant = Integer.parseInt(lineNo.substring(0, 2), 16) + "";
         String line = Integer.parseInt(lineNo.substring(2, 4), 16) + "";
         return allLineInfoDao.queryBuilder().where(AllLineInfoDao.Properties.Acnt.eq(ant), AllLineInfoDao.Properties.Routeno.eq(line)).unique();
@@ -182,7 +184,7 @@ public class DBManager {
      *
      * @param lineInfo
      */
-    public void updateLineInfo(LineInfoUp lineInfo) {
+    void updateLineInfo(LineInfoUp lineInfo) {
         try {
             LineInfoUp lineInfoOld = lineInfoDao.queryBuilder().where(LineInfoUpDao.Properties.Line.eq(lineInfo.getLine())).unique();
             if (lineInfoOld != null) {
@@ -202,7 +204,7 @@ public class DBManager {
      * @param lineInfo
      * @param line
      */
-    public void updateStation(LineInfoDown lineInfo, String line) {
+    void updateStation(LineInfoDown lineInfo, String line) {
         try {
             List<LineStation> lineStations = lineStationDao.queryBuilder().where(LineStationDao.Properties.Line.eq(line)).list();
             if (lineStations.size() != 0) {
@@ -224,7 +226,7 @@ public class DBManager {
      * @param lineInfo
      * @param line
      */
-    public void updatePrice(LineInfoDown lineInfo, String line) {
+    void updatePrice(LineInfoDown lineInfo, String line) {
         try {
             List<LinePriceInfo> linePrices = linePriceInfoDao.queryBuilder().where(LinePriceInfoDao.Properties.Line.eq(line)).list();
             if (linePrices.size() != 0) {
@@ -247,7 +249,7 @@ public class DBManager {
      *
      * @param gpsStatus
      */
-    public void setGpsStatus(int gpsStatus) {
+    void setGpsStatus(int gpsStatus) {
         CarConfig carConfig = getCarConfig();
         carConfig.setGPS(gpsStatus);
         carConfig.setTime(System.currentTimeMillis());
@@ -260,7 +262,7 @@ public class DBManager {
      *
      * @param posSn
      */
-    public void setPosSn(String posSn) {
+    void setPosSn(String posSn) {
         CarConfig carConfig = getCarConfig();
         carConfig.setPosSn(posSn);
         carConfig.setTime(System.currentTimeMillis());
@@ -275,7 +277,7 @@ public class DBManager {
      * @param openID
      * @return >0说明存在则不发起支付
      */
-    public boolean filterOpenID(String openID) {
+    boolean filterOpenID(String openID) {
         ScanInfoEntity unique = scanInfoEntityDao.
                 queryBuilder().limit(1).orderDesc(ScanInfoEntityDao.Properties.Id).build().unique();
         if (unique != null) {
@@ -293,7 +295,7 @@ public class DBManager {
      * @param openID
      * @return
      */
-    public boolean filterBlackName(String openID) {
+    boolean filterBlackName(String openID) {
         Query<BlackListEntity> build = blackListEntityDao.queryBuilder().where(BlackListEntityDao.Properties.Open_id.eq(openID),
                 BlackListEntityDao.Properties.Time.ge(DateUtil.currentLong())).build();
         BlackListEntity blackEntity = build.unique();
@@ -301,12 +303,12 @@ public class DBManager {
     }
 
 
-    public void setBusNo(String busNo) {
+    void setBusNo(String busNo) {
         updateCarConfig(getCarConfig().setBusNo(busNo));
     }
 
     //设置FTP
-    public void setFTP(FTPEntity ftp) {
+    void setFTP(FTPEntity ftp) {
         if (ftp == null) {
             ftpEntityDao.insertOrReplace(new FTPEntity(0l, BuildConfig.FTPURI, BuildConfig.FTPPORT, BuildConfig.FTPNAME, BuildConfig.FTPPSW, ""));
         } else {
@@ -316,7 +318,7 @@ public class DBManager {
     }
 
     //获取FTP地址
-    public FTPEntity getFTP() {
+    FTPEntity getFTP() {
         FTPEntity ftpEntity = ftpEntityDao.queryBuilder().limit(1).unique();
         if (ftpEntity == null) {
             ftpEntity = new FTPEntity(0l, BuildConfig.FTPURI, BuildConfig.FTPPORT, BuildConfig.FTPNAME, BuildConfig.FTPPSW, "");
@@ -325,7 +327,7 @@ public class DBManager {
     }
 
     //设置备注信息
-    public void setMark(String mark) {
+    void setMark(String mark) {
         updateCarConfig(getCarConfig().setMark(mark));
     }
 
@@ -335,23 +337,23 @@ public class DBManager {
     }
 
     //设置变站模式
-    public void updateBianStatu(int bianStatu) {
+    void updateBianStatu(int bianStatu) {
         updateCarRunInfo(getCarRunInfo().setBianStatu(bianStatu));
     }
 
     //设置卡机上下机状态
-    public void updatedDeviceStatus(int deviceStatus) {
+    void updatedDeviceStatus(int deviceStatus) {
         updateCarRunInfo(getCarRunInfo().setDeviceStatus(deviceStatus));
     }
 
     //查询线路是否存在
-    public List<AllLineInfo> checkLine(String arnt, String line) {
+    List<AllLineInfo> checkLine(String arnt, String line) {
         AllLineInfoDao allLineInfoDao = DBCore.getDaoSession().getAllLineInfoDao();
         return allLineInfoDao.queryBuilder().where(AllLineInfoDao.Properties.Acnt.eq(arnt), AllLineInfoDao.Properties.Routeno.eq(line)).list();
     }
 
     //获取到票价
-    public int getPrice(int station, int diraction) {
+    int getPrice(int station, int diraction) {
         LinePriceInfo linePriceInfo = linePriceInfoDao.queryBuilder().where(LinePriceInfoDao.Properties.Diraction.eq(diraction), LinePriceInfoDao.Properties.No.eq(station)).limit(1).unique();
         if (linePriceInfo == null) {
             return 0;
@@ -361,7 +363,7 @@ public class DBManager {
 
 
     //获取到当前站点信息  如果不存在则设置一个默认值 防止空指针问题
-    public LineStation getNowStation() {
+    LineStation getNowStation() {
         CarRunInfo carRunInfo = getCarRunInfo();
         UseConfig useConfig = getUseConfig();
         LineStation lineStation = lineStationDao.queryBuilder().where(LineStationDao.Properties.Diraction.eq(carRunInfo.getDiraction()), LineStationDao.Properties.No.eq(useConfig.getStation())).limit(1).unique();
@@ -372,7 +374,7 @@ public class DBManager {
     }
 
     //获取到单个站点一个票价的票价(分段计费)
-    public LinePriceInfo getNowSigleTicketPrice() {
+    LinePriceInfo getNowSigleTicketPrice() {
         CarRunInfo carRunInfo = getCarRunInfo();
         UseConfig useConfig = getUseConfig();
         LinePriceInfo linePriceInfo = linePriceInfoDao.queryBuilder().where(LinePriceInfoDao.Properties.Diraction.eq(carRunInfo.getDiraction()), LinePriceInfoDao.Properties.No.eq(useConfig.getStation())).limit(1).unique();
@@ -384,8 +386,12 @@ public class DBManager {
 
 
     //通过方向获取到所有站点
-    public List<LineStation> getStationList() {
+    List<LineStation> getStationList() {
         CarRunInfo carRunInfo = getCarRunInfo();
         return lineStationDao.queryBuilder().where(LineStationDao.Properties.Diraction.eq(carRunInfo.getDiraction())).list();
+    }
+
+    void setNowStation(int station) {
+        useConfigDao.update(getUseConfig().setStation(station));
     }
 }

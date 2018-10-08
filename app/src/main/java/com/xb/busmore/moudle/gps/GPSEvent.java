@@ -7,12 +7,15 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.xb.busmore.base.App;
 import com.xb.busmore.dao.manage.DBManager;
 import com.xb.busmore.entity.LineStation;
 import com.xb.busmore.moudle.init.LocationService;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.util.ThreadScheduledExecutorUtil;
+import com.xb.busmore.util.Utils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -106,14 +109,20 @@ public class GPSEvent {
                 Log.w("GPS定位成功", "站点坐标" + location.getLatitude() + "," + location.getLongitude() + "  定位类型" + location.getLocType());
                 //用于设置百度定位识别的卫星数
                 PosManager.getInstance().setGpsStatus(location.getSatelliteNumber());
-                List<LineStation> lineStationList = DBManager.getInstance().getStationList();
+                List<LineStation> lineStationList =PosManager.getInstance().getStationList();
                 for (int i = 0; i < lineStationList.size(); i++) {
-
+                    LatLng nowGps = new LatLng(Utils.get6Double(location.getLatitude()), Utils.get6Double(location.getLongitude()));
+                    LatLng stationGps = new LatLng(Utils.get6Double(lineStationList.get(i).getLatitude()), Utils.get6Double(lineStationList.get(i).getLongitude()));
+                    double gpsDistance = DistanceUtil.getDistance(nowGps, stationGps);
+                    Log.i("MI  info", "onReceiveLocation(GPSEvent.java)117)定位与站点的距离" + gpsDistance);
+                    if (gpsDistance < lineStationList.get(i).getDistance()) {
+                        Log.i("MI  info", "onReceiveLocation(GPSEvent.java)119)定位到了站点" + lineStationList.get(i).getName());
+                        if (PosManager.getInstance().getUseConfig().getStation() != lineStationList.get(i).getNo()) {
+                            Log.i("MI  info","onReceiveLocation(GPSEvent.java)121)更新定位到的站点"+ lineStationList.get(i).getName());
+                            PosManager.getInstance().setNowStation(lineStationList.get(i).getNo());
+                        }
+                    }
                 }
-                //计算距离
-//                LatLng gp1 = new LatLng(Utils.get6Double(gPSEntity.getLatitude()), Utils.get6Double(gPSEntity.getLongitude()));
-//                LatLng gp2 = new LatLng(Utils.get6Double(gpsEntity.getLatitude()), Utils.get6Double(gpsEntity.getLongitude()));
-//                double length1 = DistanceUtil.getDistance(gp1, gp2);
             } else {
                 PosManager.getInstance().setGpsStatus(0);
             }

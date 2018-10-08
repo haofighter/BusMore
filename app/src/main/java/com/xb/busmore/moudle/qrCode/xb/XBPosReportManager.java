@@ -5,11 +5,9 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.xb.busmore.base.App;
-import com.xb.busmore.base.Config;
 import com.xb.busmore.base.rx.RxBus;
 import com.xb.busmore.base.rx.RxMessage;
-import com.xb.busmore.dao.manage.DBManager;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.moudle.qrCode.QRCode;
 import com.xb.busmore.moudle.qrCode.entity.FTPEntity;
 import com.xb.busmore.moudle.qrCode.entity.MCHEntity;
@@ -18,10 +16,7 @@ import com.xb.busmore.util.BusToast;
 import com.xb.busmore.util.DateUtil;
 import com.xb.busmore.util.Utils;
 import com.xb.busmore.util.net.ftp.InitFtpDate;
-import com.xb.busmore.util.net.ftpUtils.FTP;
 import com.xb.busmore.util.sound.SoundPoolUtil;
-
-import java.util.List;
 
 /**
  * 作者: Tangren on 2017-09-08
@@ -123,34 +118,6 @@ public class XBPosReportManager {
                         } else {
                             BusToast.showToast(App.getInstance(), "未查询到此线路", true);
                         }
-
-
-//                        ZBGJApp.getVariable().setLine(l);
-//                        FetchAppConfig.SetLinName(n);
-//                        PosManager.getInstance().setBusNo(n);
-//                        if (up.equals("1")) {
-//                            ZBGJApp.getVariable().setDeviceStatus(1);
-//                            up = "1";
-//                        } else if (up.equals("2")) {
-//                            ZBGJApp.getVariable().setDeviceStatus(0);
-//                            up = "0";
-//                        } else {
-//                            ZBGJApp.getVariable().setDeviceStatus(2);
-//                            up = "2";
-//                        }
-//
-//                        if (!DBManager.ISLine(Long.parseLong(l, 16))) {
-//                            Log.w("setting", "res");
-//                            BusToast.showToast(ZBGJApp.getInstance(), "无此线路请重新设置", false);
-//                        } else {
-//                            FetchAppConfig.SetLinName(l);
-////                            CommonSharedPreferences.put("LineName", l);
-//                            ZBGJApp.getVariable().setBian(bian.equals("1") ? "0" : "1");
-//                            ZBGJApp.getVariable().setBUS_STATION(1);
-////                            GPSEvent.resetLine();
-//                            BusToast.showToast(ZBGJApp.getInstance(), "线路:" + l + "\r\n" + "车辆自编号：" + n + "\r\n" + "设备交易类型" + up + "\r\n" + "自动变站：" + bian, true);
-//                            ZBGJApp.getInstance().post(new RxMessage(RxMessage.SettingLine, new SettingLineParm(l, n, bian, up)));
-//                        }
                     }
                     break;
                 default:

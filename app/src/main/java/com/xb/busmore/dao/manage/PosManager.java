@@ -1,20 +1,23 @@
-package com.xb.busmore.moudle.manage;
+package com.xb.busmore.dao.manage;
 
 import android.util.Log;
 
 import com.xb.busmore.dao.db.MacKeyEntityDao;
 import com.xb.busmore.dao.db.PublicKeyEntityDao;
-import com.xb.busmore.dao.manage.DBCore;
-import com.xb.busmore.dao.manage.DBManager;
-import com.xb.busmore.entity.AllLine;
 import com.xb.busmore.entity.AllLineInfo;
+import com.xb.busmore.entity.LineInfoDown;
+import com.xb.busmore.entity.LineInfoUp;
+import com.xb.busmore.entity.LinePriceInfo;
+import com.xb.busmore.entity.LineStation;
 import com.xb.busmore.entity.car.CarConfig;
 import com.xb.busmore.entity.car.CarRunInfo;
 import com.xb.busmore.entity.car.UseConfig;
+import com.xb.busmore.moudle.qrCode.entity.FTPEntity;
 import com.xb.busmore.moudle.qrCode.entity.MacKeyEntity;
 import com.xb.busmore.moudle.qrCode.entity.PublicKeyEntity;
 import com.xb.busmore.util.DateUtil;
 import com.xb.busmore.util.Utils;
+import com.xb.busmore.util.sp.CommonSharedPreferences;
 
 import java.util.List;
 
@@ -37,6 +40,7 @@ public class PosManager {
 
     //获取到银联支付的价格
     public static int getUnionPayPrice() {
+        //TODO  获取银联的刷卡价格
         return 1;
     }
 
@@ -79,8 +83,8 @@ public class PosManager {
     }
 
     //获取到用户参数
-    public void setUseConfig(UseConfig useConfig) {
-        DBManager.getInstance().updateUseConfig(useConfig);
+    public UseConfig setUseConfig(UseConfig useConfig) {
+        return DBManager.getInstance().updateUseConfig(useConfig);
     }
 
 
@@ -100,8 +104,8 @@ public class PosManager {
     }
 
     //更新运行状态
-    public void setCarRunInfo(CarRunInfo carRunInfo) {
-        DBManager.getInstance().updateCarRunInfo(carRunInfo);
+    public CarRunInfo setCarRunInfo(CarRunInfo carRunInfo) {
+      return  DBManager.getInstance().updateCarRunInfo(carRunInfo);
     }
 
     //设置GPS信号
@@ -109,8 +113,16 @@ public class PosManager {
         DBManager.getInstance().setGpsStatus(gpsStatus);
     }
 
+    //获取司机的上下班状态
     public boolean getSign() {
         return DBManager.getInstance().getCarRunInfo().getSign();
+    }
+
+    //设置司机的上下班状态
+    public void setSign(boolean sign) {
+        CarRunInfo carRunInfo = DBManager.getInstance().getCarRunInfo();
+        carRunInfo.setSign(sign);
+        setCarRunInfo(carRunInfo);
     }
 
     /***
@@ -174,8 +186,55 @@ public class PosManager {
         }
     }
 
+    //获取到分段计费站点的票价
     public static int getPrice(int i, int diraction) {
         return DBManager.getInstance().getPrice(i, diraction);
+    }
+
+    //设置当前的站点信息
+    public void setNowStation(int station) {
+        DBManager.getInstance().setNowStation(station);
+    }
+
+    //获取当前站点信息
+    public LineStation getNowStation() {
+        return DBManager.getInstance().getNowStation();
+    }
+
+    //获取当前站点的票价信息
+    public LinePriceInfo getNowSigleTicketPrice() {
+        return DBManager.getInstance().getNowSigleTicketPrice();
+    }
+
+    //获取当前方向的站点
+    public List<LineStation> getStationList() {
+        return DBManager.getInstance().getStationList();
+    }
+
+    //检查openid 是否存在且保存时间小于当前时间6S
+    public boolean filterOpenID(String open_id) {
+        return DBManager.getInstance().filterOpenID(open_id);
+    }
+
+    // 是否属于黑名单
+    public boolean filterBlackName(String open_id) {
+        return DBManager.getInstance().filterBlackName(open_id);
+    }
+
+    //获取FTP配置信息
+    public FTPEntity getFTP() {
+        return DBManager.getInstance().getFTP();
+    }
+
+    //更新线路信息
+    public void updateLineInfo(LineInfoUp lineInfoup) {
+        DBManager.getInstance().updateLineInfo(lineInfoup);
+    }
+
+    //更新票价
+    public void updateStationInfo(LineInfoDown lineInfoDown, String line) {
+        DBManager.getInstance().updatePrice(lineInfoDown, line);
+        DBManager.getInstance().updateStation(lineInfoDown, line);
     }
 
 

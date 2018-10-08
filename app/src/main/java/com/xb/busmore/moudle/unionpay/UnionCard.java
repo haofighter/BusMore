@@ -14,7 +14,7 @@ import com.xb.busmore.base.App;
 import com.xb.busmore.dao.db.UnionAidEntityDao;
 import com.xb.busmore.entity.car.CarConfig;
 import com.xb.busmore.entity.car.UseConfig;
-import com.xb.busmore.moudle.manage.PosManager;
+import com.xb.busmore.dao.manage.PosManager;
 import com.xb.busmore.moudle.unionpay.config.UnionConfig;
 import com.xb.busmore.moudle.unionpay.entity.PassCode;
 import com.xb.busmore.moudle.unionpay.entity.TERM_INFO;

@@ -32,6 +32,7 @@ public class CarConfigDao extends AbstractDao<CarConfig, Long> {
         public final static Property UnionPos = new Property(5, String.class, "unionPos", false, "UNION_POS");
         public final static Property PosSn = new Property(6, String.class, "posSn", false, "POS_SN");
         public final static Property Mark = new Property(7, String.class, "mark", false, "MARK");
+        public final static Property Line = new Property(8, String.class, "line", false, "LINE");
     }
 
 
@@ -54,7 +55,8 @@ public class CarConfigDao extends AbstractDao<CarConfig, Long> {
                 "\"UNION_TRA_NO\" TEXT," + // 4: unionTraNo
                 "\"UNION_POS\" TEXT," + // 5: unionPos
                 "\"POS_SN\" TEXT," + // 6: posSn
-                "\"MARK\" TEXT);"); // 7: mark
+                "\"MARK\" TEXT," + // 7: mark
+                "\"LINE\" TEXT);"); // 8: line
     }
 
     /** Drops the underlying database table. */
@@ -102,6 +104,11 @@ public class CarConfigDao extends AbstractDao<CarConfig, Long> {
         if (mark != null) {
             stmt.bindString(8, mark);
         }
+ 
+        String line = entity.getLine();
+        if (line != null) {
+            stmt.bindString(9, line);
+        }
     }
 
     @Override
@@ -143,6 +150,11 @@ public class CarConfigDao extends AbstractDao<CarConfig, Long> {
         if (mark != null) {
             stmt.bindString(8, mark);
         }
+ 
+        String line = entity.getLine();
+        if (line != null) {
+            stmt.bindString(9, line);
+        }
     }
 
     @Override
@@ -160,7 +172,8 @@ public class CarConfigDao extends AbstractDao<CarConfig, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // unionTraNo
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // unionPos
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // posSn
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // mark
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // mark
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // line
         );
         return entity;
     }
@@ -175,6 +188,7 @@ public class CarConfigDao extends AbstractDao<CarConfig, Long> {
         entity.setUnionPos(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setPosSn(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setMark(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setLine(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

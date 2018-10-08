@@ -16,16 +16,18 @@ public class CarRunInfo {
     int bianStatu;//变站模式  0自动变站  1手动变站
     int price;//票价
     boolean sign;//司机的签到状态
+    String coefficient;//折扣信息
 
-    @Generated(hash = 189570921)
+    @Generated(hash = 293031920)
     public CarRunInfo(Long id, int diraction, int deviceStatus, int bianStatu,
-                      int price, boolean sign) {
+            int price, boolean sign, String coefficient) {
         this.id = id;
         this.diraction = diraction;
         this.deviceStatus = deviceStatus;
         this.bianStatu = bianStatu;
         this.price = price;
         this.sign = sign;
+        this.coefficient = coefficient;
     }
 
     @Generated(hash = 236881571)
@@ -53,8 +55,9 @@ public class CarRunInfo {
         return this.price;
     }
 
-    public void setPrice(int price) {
+    public CarRunInfo setPrice(int price) {
         this.price = price;
+        return this;
     }
 
     public boolean getSign() {
@@ -80,6 +83,15 @@ public class CarRunInfo {
 
     public CarRunInfo setBianStatu(int bianStatu) {
         this.bianStatu = bianStatu;
+        return this;
+    }
+
+    public String getCoefficient() {
+        return this.coefficient;
+    }
+
+    public CarRunInfo setCoefficient(String coefficient) {
+        this.coefficient = coefficient;
         return this;
     }
 
