@@ -9,6 +9,8 @@ import android.view.*
 import com.xb.busmore.R
 import com.xb.busmore.base.rx.RxBus
 import com.xb.busmore.base.rx.RxMessage
+import io.reactivex.Flowable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_base.*
 
@@ -17,8 +19,8 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
-       var view= LayoutInflater.from(this).inflate(rootView(), null)
-        view.layoutParams= ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
+        var view = LayoutInflater.from(this).inflate(rootView(), null)
+        view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         base_layout.addView(view)
     }
 
@@ -41,8 +43,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
+    var rx: Disposable
+
     init {
-        RxBus.getInstance().tObservable(RxMessage::class.java).filter {
+        rx = RxBus.getInstance().tObservable(RxMessage::class.java).filter {
             rxMassage(it)
         }.subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -52,5 +56,24 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun keyEvent(key: Int)
 
-    abstract fun rxMassage(message: RxMessage): Boolean
+    open fun rxMassage(message: RxMessage): Boolean {
+        when (message.type) {
+            RxMessage.KEY_EVENT -> keyEvent(message.data as Int)
+        }
+        return true
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_BACK -> false
+            KeyEvent.KEYCODE_HOME -> false
+            KeyEvent.KEYCODE_MENU -> false
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        rx.dispose()
+    }
 }

@@ -30,7 +30,6 @@ import org.greenrobot.greendao.annotation.Id;
 public class CardRecord {
 
 
-
     @Id(autoincrement = true)
     private Long id;//id
     private String Status;//状态码
@@ -53,30 +52,31 @@ public class CardRecord {
     private String ticket;//补票
     private String UpLoad;//是否上传 0未 1已
 
-    public CardRecord bulider(String code){
-        CardRecord cardRecord=new CardRecord();
-        cardRecord.setStatus(code.substring(0,2));
-        cardRecord.setCardType(code.substring(2,4));
-        cardRecord.setPayType(code.substring(4,6));
-        cardRecord.setDeviceNo(code.substring(6,12));
-        cardRecord.setCardNumber(code.substring(12,28));
-        cardRecord.setCardMoney(code.substring(28,34));
-        cardRecord.setPayMoney(code.substring(34,40));
-        cardRecord.setDateTime(code.substring(40,54));
-        cardRecord.setTrantScationNo(code.substring(54,58));
-        cardRecord.setTACNo(code.substring(58,66));
-        cardRecord.setLineNo(code.substring(66,70));
-        cardRecord.setBusNo(code.substring(70,76));
-        cardRecord.setDriverNo(code.substring(76,84));
-        cardRecord.setPSAMNo(code.substring(84,96));
-        cardRecord.setExposure(code.substring(96,98));
-        cardRecord.setUp_station(code.substring(98,100));
+    public CardRecord bulider(String code) {
+        CardRecord cardRecord = new CardRecord();
+        cardRecord.setStatus(code.substring(0, 2));
+        cardRecord.setCardType(code.substring(2, 4));
+        cardRecord.setPayType(code.substring(4, 6));
+        cardRecord.setDeviceNo(code.substring(6, 12));
+        cardRecord.setCardNumber(code.substring(12, 28));
+        cardRecord.setCardMoney(code.substring(28, 34));
+        cardRecord.setPayMoney(code.substring(34, 40));
+        cardRecord.setDateTime(code.substring(40, 54));
+        cardRecord.setTrantScationNo(code.substring(54, 58));
+        cardRecord.setTACNo(code.substring(58, 66));
+        cardRecord.setLineNo(code.substring(66, 70));
+        cardRecord.setBusNo(code.substring(70, 76));
+        cardRecord.setDriverNo(code.substring(76, 84));
+        cardRecord.setPSAMNo(code.substring(84, 96));
+        cardRecord.setExposure(code.substring(96, 98));
+        cardRecord.setUp_station(code.substring(98, 100));
         cardRecord.setTicket("00");
         cardRecord.setUpLoad("0");
         Log.d("CardRecord",
-            "bulider(CardRecord.java:75)"+toString());
+                "bulider(CardRecord.java:75)" + toString());
         return cardRecord;
     }
+
     @Generated(hash = 1400023658)
     public CardRecord(Long id, String Status, String CardType, String PayType,
                       String DeviceNo, String CardNumber, String CardMoney, String PayMoney,
@@ -103,122 +103,180 @@ public class CardRecord {
         this.ticket = ticket;
         this.UpLoad = UpLoad;
     }
+
     @Generated(hash = 19461391)
     public CardRecord() {
     }
+
     public Long getId() {
         return this.id;
     }
-    public void setId(Long id) {
+
+    public CardRecord setId(Long id) {
         this.id = id;
+        return this;
     }
+
     public String getStatus() {
         return this.Status;
     }
-    public void setStatus(String Status) {
+
+    public CardRecord setStatus(String Status) {
         this.Status = Status;
+        return this;
     }
+
     public String getCardType() {
         return this.CardType;
     }
-    public void setCardType(String CardType) {
+
+    public CardRecord setCardType(String CardType) {
         this.CardType = CardType;
+        return this;
     }
+
     public String getPayType() {
         return this.PayType;
     }
-    public void setPayType(String PayType) {
+
+    public CardRecord setPayType(String PayType) {
         this.PayType = PayType;
+        return this;
     }
+
     public String getDeviceNo() {
         return this.DeviceNo;
     }
-    public void setDeviceNo(String DeviceNo) {
+
+    public CardRecord setDeviceNo(String DeviceNo) {
         this.DeviceNo = DeviceNo;
+        return this;
     }
+
     public String getCardNumber() {
         return this.CardNumber;
     }
-    public void setCardNumber(String CardNumber) {
+
+    public CardRecord setCardNumber(String CardNumber) {
         this.CardNumber = CardNumber;
+        return this;
     }
+
     public String getCardMoney() {
         return this.CardMoney;
     }
-    public void setCardMoney(String CardMoney) {
+
+    public CardRecord setCardMoney(String CardMoney) {
         this.CardMoney = CardMoney;
+        return this;
     }
+
     public String getPayMoney() {
         return this.PayMoney;
     }
-    public void setPayMoney(String PayMoney) {
+
+    public CardRecord setPayMoney(String PayMoney) {
         this.PayMoney = PayMoney;
+        return this;
     }
+
     public String getDateTime() {
         return this.DateTime;
     }
-    public void setDateTime(String DateTime) {
+
+    public CardRecord setDateTime(String DateTime) {
         this.DateTime = DateTime;
+        return this;
     }
+
     public String getTrantScationNo() {
         return this.TrantScationNo;
     }
-    public void setTrantScationNo(String TrantScationNo) {
+
+    public CardRecord setTrantScationNo(String TrantScationNo) {
         this.TrantScationNo = TrantScationNo;
+        return this;
     }
+
     public String getTACNo() {
         return this.TACNo;
     }
-    public void setTACNo(String TACNo) {
+
+    public CardRecord setTACNo(String TACNo) {
         this.TACNo = TACNo;
+        return this;
     }
+
     public String getLineNo() {
         return this.LineNo;
     }
-    public void setLineNo(String LineNo) {
+
+    public CardRecord setLineNo(String LineNo) {
         this.LineNo = LineNo;
+        return this;
     }
+
     public String getBusNo() {
         return this.BusNo;
     }
-    public void setBusNo(String BusNo) {
+
+    public CardRecord setBusNo(String BusNo) {
         this.BusNo = BusNo;
+        return this;
     }
+
     public String getDriverNo() {
         return this.DriverNo;
     }
-    public void setDriverNo(String DriverNo) {
+
+    public CardRecord setDriverNo(String DriverNo) {
         this.DriverNo = DriverNo;
+        return this;
     }
+
     public String getPSAMNo() {
         return this.PSAMNo;
     }
-    public void setPSAMNo(String PSAMNo) {
+
+    public CardRecord setPSAMNo(String PSAMNo) {
         this.PSAMNo = PSAMNo;
+        return this;
     }
+
     public String getExposure() {
         return this.exposure;
     }
-    public void setExposure(String exposure) {
+
+    public CardRecord setExposure(String exposure) {
         this.exposure = exposure;
+        return this;
     }
+
     public String getUp_station() {
         return this.up_station;
     }
-    public void setUp_station(String up_station) {
+
+    public CardRecord setUp_station(String up_station) {
         this.up_station = up_station;
+        return this;
     }
+
     public String getTicket() {
         return this.ticket;
     }
-    public void setTicket(String ticket) {
+
+    public CardRecord setTicket(String ticket) {
         this.ticket = ticket;
+        return this;
     }
+
     public String getUpLoad() {
         return this.UpLoad;
     }
-    public void setUpLoad(String UpLoad) {
+
+    public CardRecord setUpLoad(String UpLoad) {
         this.UpLoad = UpLoad;
+        return this;
     }
 
 

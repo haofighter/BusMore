@@ -115,7 +115,7 @@ public class FTP {
      * @return true上传成功, false上传失败
      * @throws IOException
      */
-    public boolean uploadingSingle(String filePath, String fileName, String remotePath,
+    public boolean uploadingSingle(String filePath, String fileName, String ftpPath,
                                    UploadProgressListener listener) throws IOException {
         boolean flag = false;
         // 不带进度的方式
@@ -125,7 +125,7 @@ public class FTP {
         // flag = ftpClient.storeFile(localFile.getName(), inputStream);
         // // 关闭文件流
         // inputStream.close();
-        this.uploadBeforeOperate(remotePath, listener);
+        this.uploadBeforeOperate(ftpPath, listener);
         File file;
         try {
             file = new File(filePath + fileName);
@@ -153,6 +153,7 @@ public class FTP {
             }
         } catch (Exception e) {
             Log.i("MI  info", "uploadingSingle(FTP.java)182) 校验服务器文件错误");
+            listener.onUploadProgress(FTP.FTP_UPLOAD_FAIL, ftpClient.listFiles(fileName)[0].getSize(), null);
             return false;
         }
     }
@@ -172,6 +173,7 @@ public class FTP {
             this.openConnect();
         } catch (IOException e1) {
             e1.printStackTrace();
+            listener.onUploadProgress(FTP.FTP_UPLOAD_FAIL, 0, null);
             Log.e("FTP", "uploadBeforeOperate(FTP.java:178)FTP连接失败");
             return;
         }

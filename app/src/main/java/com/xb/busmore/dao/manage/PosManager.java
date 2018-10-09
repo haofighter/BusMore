@@ -12,6 +12,7 @@ import com.xb.busmore.entity.LineStation;
 import com.xb.busmore.entity.car.CarConfig;
 import com.xb.busmore.entity.car.CarRunInfo;
 import com.xb.busmore.entity.car.UseConfig;
+import com.xb.busmore.moudle.card.CardRecord;
 import com.xb.busmore.moudle.qrCode.entity.FTPEntity;
 import com.xb.busmore.moudle.qrCode.entity.MacKeyEntity;
 import com.xb.busmore.moudle.qrCode.entity.PublicKeyEntity;
@@ -238,4 +239,11 @@ public class PosManager {
     }
 
 
+    public void insertRecord(CardRecord cardRecord) {
+        DBManager.getInstance().insert(cardRecord);
+    }
+
+    public void updateRecord(List<CardRecord> cardRecord) {
+        DBManager.getInstance().updateRecord(cardRecord);
+    }
 }

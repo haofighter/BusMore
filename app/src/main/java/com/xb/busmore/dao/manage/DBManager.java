@@ -9,6 +9,7 @@ import com.xb.busmore.dao.db.AllLineInfoDao;
 import com.xb.busmore.dao.db.BlackListEntityDao;
 import com.xb.busmore.dao.db.CarConfigDao;
 import com.xb.busmore.dao.db.CarRunInfoDao;
+import com.xb.busmore.dao.db.CardRecordDao;
 import com.xb.busmore.dao.db.FTPEntityDao;
 import com.xb.busmore.dao.db.LineInfoUpDao;
 import com.xb.busmore.dao.db.LinePriceInfoDao;
@@ -26,6 +27,7 @@ import com.xb.busmore.entity.LinePriceInfo;
 import com.xb.busmore.entity.LineStation;
 import com.xb.busmore.entity.car.CarRunInfo;
 import com.xb.busmore.entity.car.UseConfig;
+import com.xb.busmore.moudle.card.CardRecord;
 import com.xb.busmore.moudle.qrCode.entity.FTPEntity;
 import com.xb.busmore.util.DateUtil;
 
@@ -49,6 +51,7 @@ public class DBManager {
     ScanInfoEntityDao scanInfoEntityDao;
     BlackListEntityDao blackListEntityDao;
     FTPEntityDao ftpEntityDao;
+    CardRecordDao cardRecordDao;
 
     private DBManager() {
         carConfigDao = DBCore.getDaoSession().getCarConfigDao();
@@ -61,6 +64,7 @@ public class DBManager {
         scanInfoEntityDao = DBCore.getDaoSession().getScanInfoEntityDao();
         blackListEntityDao = DBCore.getDaoSession().getBlackListEntityDao();
         ftpEntityDao = DBCore.getDaoSession().getFTPEntityDao();
+        cardRecordDao = DBCore.getDaoSession().getCardRecordDao();
     }
 
     private static DBManager dbManager = new DBManager();
@@ -93,7 +97,7 @@ public class DBManager {
                 mark = "公交";
             }
 
-            carConfig = new CarConfig(0l, 0, System.currentTimeMillis(), "未设置", "未设置", "未设置", "未设置", mark,"000000");
+            carConfig = new CarConfig(0l, 0, System.currentTimeMillis(), "未设置", "未设置", "未设置", "", mark, "000000");
         }
         return carConfig;
     }
@@ -391,7 +395,18 @@ public class DBManager {
         return lineStationDao.queryBuilder().where(LineStationDao.Properties.Diraction.eq(carRunInfo.getDiraction())).list();
     }
 
+    //设置当前的站点
     void setNowStation(int station) {
         useConfigDao.update(getUseConfig().setStation(station));
+    }
+
+    //增加刷卡记录
+    void insert(CardRecord cardRecord) {
+        cardRecordDao.insertOrReplace(cardRecord);
+    }
+
+    //更新刷卡记录  主要用于记录上传后更新状态
+    void updateRecord(List<CardRecord> cardRecord) {
+        cardRecordDao.insertOrReplaceInTx(cardRecord);
     }
 }

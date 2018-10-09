@@ -1,16 +1,19 @@
 package com.xb.busmore.moudle.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.telephony.PhoneStateListener
 import android.telephony.SignalStrength
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.View
 import com.xb.busmore.BuildConfig
 import com.xb.busmore.R
 import com.xb.busmore.base.App
 import com.xb.busmore.base.BackCall
 import com.xb.busmore.base.BaseActivity
+import com.xb.busmore.base.PosKeyConfig
 import com.xb.busmore.base.rx.RxMessage
 import com.xb.busmore.dao.manage.DBManager
 import com.xb.busmore.dao.manage.PosManager
@@ -32,7 +35,6 @@ class HomeActivity : BaseActivity(), BackCall {
         var telephonyManager = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         telephonyManager.listen(SignalListener(), PhoneStateListener.LISTEN_SIGNAL_STRENGTH or PhoneStateListener.LISTEN_SIGNAL_STRENGTHS)
         refreshView()
-
         sign_click.setOnClickListener {
             //            var byte = Utils.hexStringToByte("00255000010088888806080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
 //            LoopCardThread_SingleZB().driverSignAction(MifareGetCard(byte),byte)
@@ -42,7 +44,11 @@ class HomeActivity : BaseActivity(), BackCall {
 
     override fun onResume() {
         super.onResume()
-        timeTask.start()
+        if (timeTask.isInterrupted) {
+            timeTask.start()
+        } else {
+            timeTask.setFlag(true)
+        }
     }
 
     //backCall的回调方法
@@ -56,20 +62,37 @@ class HomeActivity : BaseActivity(), BackCall {
     //计时器任务
     var timeTask: TimeTask = TimeTask(this)
 
-
     //按键接收
     override fun keyEvent(key: Int) {
-
+        Log.i("MI  info", "(HomeActivity.java62)" + key)
+        when (key) {
+            PosKeyConfig.key_up_left -> {
+                if (PosManager.getInstance().carRunInfo.bianStatu == 1) {//手动变站
+                    var nowStation = PosManager.getInstance().useConfig.station + 1
+                    if (nowStation > PosManager.getInstance().stationList.size) {
+                        nowStation = 1
+                    }
+                    PosManager.getInstance().useConfig.station = nowStation
+                } else {
+                    startActivity(Intent(this, MenuActivity::class.java))
+                }
+            }
+            PosKeyConfig.key_up_right
+            -> {
+            }
+            PosKeyConfig.key_down_left
+            -> {
+            }
+            PosKeyConfig.key_down_right
+            -> {
+            }
+        }
     }
 
     //接收Rx的事件
     override fun rxMassage(message: RxMessage): Boolean {
-        when (message.type) {
-            RxMessage.KEY_EVENT -> keyEvent(message.data as Int)
-        }
-        return true
+        return super.rxMassage(message)
     }
-
 
     //用于界面刷新
     fun refreshView() {
@@ -114,8 +137,8 @@ class HomeActivity : BaseActivity(), BackCall {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         timeTask.setFlag(false)
     }
 }

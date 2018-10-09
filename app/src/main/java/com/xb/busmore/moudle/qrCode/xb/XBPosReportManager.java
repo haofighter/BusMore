@@ -88,11 +88,11 @@ public class XBPosReportManager {
                     Log.w("LoopScan", Utils.verify(keys) + t);
                     if (t != null && t.length() > 0 && Utils.verify(keys)) {
                         if (t.equals("0")) {
-                            SoundPoolUtil.play(22);
+                            SoundPoolUtil.play(28);
                             PosManager.getInstance().setDiraction(0);
                             BusToast.showToast(App.getInstance(), "设置上行方向成功", true);
                         } else if (t.equals("1")) {
-                            SoundPoolUtil.play(22);
+                            SoundPoolUtil.play(28);
 //                            UseChangeSharedPreferences.getInstance().used("put", "Direction", "1");
                             PosManager.getInstance().setDiraction(0);
                             BusToast.showToast(App.getInstance(), "设置下行方向成功", true);

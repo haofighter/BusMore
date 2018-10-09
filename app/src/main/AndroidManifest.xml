@@ -48,7 +48,8 @@
         <service android:name=".moudle.qrCode.LoopScanTask" />
 
         <activity android:name=".moudle.activity.HomeActivity" />
-        <activity android:name=".moudle.activity.SigninActivity"></activity>
+        <activity android:name=".moudle.activity.SigninActivity" />
+        <activity android:name=".moudle.activity.MenuActivity"></activity>
     </application>
 
 </manifest>

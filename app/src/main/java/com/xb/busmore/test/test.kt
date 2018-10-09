@@ -2,6 +2,7 @@ package com.xb.busmore.test
 
 import android.os.Environment
 import android.util.Log
+import com.xb.busmore.dao.manage.PosManager
 import com.xb.busmore.moudle.card.CardRecord
 import com.xb.busmore.util.Utils
 import com.xb.busmore.util.net.ftpUtils.FTP
@@ -45,6 +46,31 @@ class test {
                     }
                 })
             }
+        }, 1, 10, TimeUnit.SECONDS)
+    }
+
+
+    var index = 0
+    var tag = ""
+    fun testRecord() {
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
+            Log.i("记录", "测试开始增加记录")
+            var record = mutableListOf<CardRecord>()
+            var recordNum = (Math.random() * 20).toInt()
+            for (i in 1..recordNum) {
+                index++
+                for (i in 1..16) {
+                    if (i < 16 - index.toString().length) {
+                        tag += "0"
+                    }
+                }
+                tag += index
+                var record = CardRecord().setCardNumber(tag).setUpLoad("0")
+                Log.i("记录", "测试增加记录" + tag)
+                PosManager.getInstance().insertRecord(record)
+                tag = ""
+            }
+            Log.i("记录", "测试增加记录" + recordNum + "条")
         }, 1, 10, TimeUnit.SECONDS)
     }
 }

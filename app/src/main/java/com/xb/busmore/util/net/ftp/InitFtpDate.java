@@ -51,6 +51,10 @@ public class InitFtpDate {
         return ftp;
     }
 
+    public FTP getTestFTP() {//测试服务器的地址
+        return new FTP().setHostName("192.144.184.104").setServerPort(26).setUserName("ftp_test").setPassword("ftp1234!@#$");
+    }
+
 
     /**
      * 下载所有文件信息
@@ -205,7 +209,7 @@ public class InitFtpDate {
 
         PosManager.getInstance().setCarConfig(PosManager.getInstance().getCarConfig().setLine(lineInfoUp.getLine()));
 
-        SoundPoolUtil.play(22);
+        SoundPoolUtil.play(28);
         BusToast.showToast(App.getInstance(), "线路号:" + useConfig.getLine() + "\n线路名:" + useConfig.getLine_chinese_name()
                 + "\n机具状态:" + (carRunInfo.getDeviceStatus() == 0 ? "上车机" : (carRunInfo.getDeviceStatus() == 1 ? "上下车机" : "下车机"))
                 + "\n变站模式:" + (carRunInfo.getBianStatu() == 0 ? "手动变站" : "自动变站")

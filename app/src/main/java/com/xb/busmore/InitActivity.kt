@@ -10,6 +10,7 @@ import com.xb.busmore.base.rx.RxMessage
 import com.xb.busmore.dao.manage.PosManager
 import com.xb.busmore.entity.OldConfig
 import com.xb.busmore.moudle.activity.HomeActivity
+import com.xb.busmore.moudle.card.UploadCardRecord
 import com.xb.busmore.moudle.key.LoopKeyEvent
 import com.xb.busmore.moudle.card.single.LoopCardThread_SingleZB
 import com.xb.busmore.moudle.init.InitK21
@@ -58,7 +59,7 @@ class InitActivity : BaseActivity() {
         runOnUiThread {
             CommonSharedPreferences.put("v", App.getInstance().getPakageVersion())
             ThreadScheduledExecutorUtil.getInstance().service
-                    .scheduleAtFixedRate(LoopCardThread_SingleZB(), 1000, 1000, TimeUnit.MILLISECONDS)
+                    .scheduleAtFixedRate(LoopCardThread_SingleZB(), 1000, 300, TimeUnit.MILLISECONDS)
             runOnUiThread { info.append("刷卡已启动\n") }
 
             ThreadScheduledExecutorUtil.getInstance().service
@@ -68,13 +69,17 @@ class InitActivity : BaseActivity() {
             startService(Intent(this, LoopScanTask::class.java))
             runOnUiThread { info.append("扫码已启动\n") }
 
+            ThreadScheduledExecutorUtil.getInstance().service
+                    .scheduleAtFixedRate(UploadCardRecord(false), 2, 10, TimeUnit.MINUTES)
+            runOnUiThread { info.append("定时上传刷卡记录已开启\n") }
+
             Executors.newScheduledThreadPool(1).schedule({ goToMainActivity() }, 2, TimeUnit.SECONDS)
         }
     }
 
 
     //K21更新
-    fun initK21() {
+    private fun initK21() {
         var v: String = CommonSharedPreferences.get("v", "0") as String;
         if (App.getInstance().getPakageVersion().equals(v)) {
             runOnUiThread { info.append("k21已更新\n") }
@@ -91,7 +96,7 @@ class InitActivity : BaseActivity() {
         })
     }
 
-    fun initAllLine() {
+    private fun initAllLine() {
         //下载线路
         Executors.newScheduledThreadPool(1).schedule(object : Runnable {
             override fun run() {
@@ -101,20 +106,23 @@ class InitActivity : BaseActivity() {
     }
 
 
-    fun goToMainActivity() {
+    private fun goToMainActivity() {
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
 
 
-    fun getOldConfig() {
+    private fun getOldConfig() {
         var old = Gson().fromJson<OldConfig>(Utils.readSaveFile(Environment.getExternalStorageDirectory().toString() + "/config.txt"), OldConfig::class.java)
         if (PosManager.getInstance().useConfig.line.equals("000000")) {
             Executors.newScheduledThreadPool(1).schedule({
                 if (Utils.StringIsEmpty(old.line)) {
-                    InitFtpDate.getInstance().downloadDetailLine(old.lineName)
+                    if (!old.lineName.equals("0000"))
+                        InitFtpDate.getInstance().downloadDetailLine(old.lineName)
+
                 } else {
-                    InitFtpDate.getInstance().downloadDetailLine(old.line)
+                    if (!old.line.equals("0000"))
+                        InitFtpDate.getInstance().downloadDetailLine(old.line)
                 }
                 val string = Gson().toJson(PosManager.getInstance().carConfig)
                 Utils.byte2File(string.toByteArray(), Environment.getExternalStorageDirectory().toString(), "config.txt")

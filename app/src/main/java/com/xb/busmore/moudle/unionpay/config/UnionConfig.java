@@ -96,9 +96,9 @@ public class UnionConfig {
     //银联二维码
     public static final int PAY_TYPE_BANK_QR = "BANK_QR".hashCode();
 
-    public static int IC_BASE2 = 34; //银联卡
-    public static int SCAN_SUCCESS = 1;//刷码成功
 
-    public static int EC_BALANCE = 10;//余额不足
-    public static int IC_INVALID = 27;//卡失效
+    public static int SCAN_SUCCESS = 1;//刷码成功
+    public static int IC_BASE2 = 41; //银联卡
+    public static int EC_BALANCE = 22;//余额不足
+    public static int IC_INVALID = 36;//卡失效
 }
