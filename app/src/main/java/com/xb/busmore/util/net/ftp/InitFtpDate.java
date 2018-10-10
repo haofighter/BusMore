@@ -56,6 +56,7 @@ public class InitFtpDate {
     }
 
 
+
     /**
      * 下载所有文件信息
      */
@@ -98,7 +99,8 @@ public class InitFtpDate {
      *
      * @param lineNo
      */
-    public void downloadDetailLine(String lineNo) {
+    public boolean downloadDetailLine(String lineNo) {
+        boolean isDownSucess = false;
         BusToast.showToast(App.getInstance(), "线路下载中", true);
         ftp.downcount++;
         int company = 0;
@@ -116,19 +118,22 @@ public class InitFtpDate {
             //如果重复下载5次都失败  即被视为网络异常
             if (ftp.downcount < 5) {
                 if (file == null) {
-                    downloadDetailLine(lineNo);
+                    isDownSucess = isDownSucess || downloadDetailLine(lineNo);
                 } else {
                     ftp.downcount = 0;
                     //解析线路文件
-                    praseLineInfo(file);
+                    isDownSucess = isDownSucess || praseLineInfo(file);
                 }
             } else {
                 ftp.downcount = 0;
                 BusToast.showToast(App.getInstance(), "线路文件更新失败", false);
+                return false;
             }
         } catch (Exception e) {
             Log.e("InitFtpDate", "downloadDetailLine(InitFtpDate.java:110)" + e.getMessage());
+            return false;
         }
+        return isDownSucess;
     }
 
 
@@ -138,7 +143,7 @@ public class InitFtpDate {
      * @param file
      * @throws Exception
      */
-    public void praseLineInfo(File file) throws Exception {
+    public boolean praseLineInfo(File file) throws Exception {
         byte[] PramVesion = FileByte.File2byte(file);
         String alllineStr = new String(PramVesion, "GB2312");
         Log.e("InitFtpDate", "praseLineInfo(InitFtpDate.java:124)" + alllineStr);
@@ -191,19 +196,19 @@ public class InitFtpDate {
         //解析线路文件成功 对参数进行数据库保存
         PosManager.getInstance().updateStationInfo(lineInfoDown, lineInfoup.getLine());
         //设置线路信息
-        setLine(lineInfoup, lineInfoDown);
+        return setLine(lineInfoup, lineInfoDown);
     }
 
 
     //设置线路信息
-    public void setLine(LineInfoUp lineInfoUp, LineInfoDown lineInfoDown) {
+    public boolean setLine(LineInfoUp lineInfoUp, LineInfoDown lineInfoDown) throws Exception {
         UseConfig useConfig = PosManager.getInstance().setUseConfig(
                 PosManager.getInstance().getUseConfig()
                         .setLine(lineInfoUp.getLine())
                         .setLine_chinese_name(lineInfoUp.getChinese_name()).
                         setStation(1));
 
-        CarRunInfo carRunInfo = PosManager.getInstance().setCarRunInfo(PosManager.getInstance().getCarRunInfo()
+        CarRunInfo carRunInfo = PosManager.getInstance().updateCarRunInfo(PosManager.getInstance().getCarRunInfo()
                 .setPrice(PosManager.getPrice(1, PosManager.getInstance().getCarRunInfo().getDiraction()))
                 .setCoefficient(lineInfoUp.getCoefficient()));
 
@@ -214,6 +219,8 @@ public class InitFtpDate {
                 + "\n机具状态:" + (carRunInfo.getDeviceStatus() == 0 ? "上车机" : (carRunInfo.getDeviceStatus() == 1 ? "上下车机" : "下车机"))
                 + "\n变站模式:" + (carRunInfo.getBianStatu() == 0 ? "手动变站" : "自动变站")
                 + "\n车辆号:" + PosManager.getInstance().getCarConfig().getBusNo(), true);
+        return true;
+
     }
 
 }

@@ -96,6 +96,14 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/diraction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/gps_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

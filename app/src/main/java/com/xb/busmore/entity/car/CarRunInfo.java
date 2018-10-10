@@ -95,5 +95,16 @@ public class CarRunInfo {
         return this;
     }
 
-
+    @Override
+    public String toString() {
+        return "CarRunInfo{" +
+                "id=" + id +
+                ", diraction=" + diraction +
+                ", deviceStatus=" + deviceStatus +
+                ", bianStatu=" + bianStatu +
+                ", price=" + price +
+                ", sign=" + sign +
+                ", coefficient='" + coefficient + '\'' +
+                '}';
+    }
 }

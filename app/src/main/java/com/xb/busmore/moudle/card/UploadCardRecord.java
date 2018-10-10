@@ -1,6 +1,7 @@
 package com.xb.busmore.moudle.card;
 
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.xb.busmore.base.App;
@@ -79,4 +80,5 @@ public class UploadCardRecord extends Thread {
         }
         super.run();
     }
+
 }

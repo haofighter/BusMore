@@ -105,8 +105,8 @@ public class PosManager {
     }
 
     //更新运行状态
-    public CarRunInfo setCarRunInfo(CarRunInfo carRunInfo) {
-      return  DBManager.getInstance().updateCarRunInfo(carRunInfo);
+    public CarRunInfo updateCarRunInfo(CarRunInfo carRunInfo) {
+        return DBManager.getInstance().updateCarRunInfo(carRunInfo);
     }
 
     //设置GPS信号
@@ -123,7 +123,7 @@ public class PosManager {
     public void setSign(boolean sign) {
         CarRunInfo carRunInfo = DBManager.getInstance().getCarRunInfo();
         carRunInfo.setSign(sign);
-        setCarRunInfo(carRunInfo);
+        updateCarRunInfo(carRunInfo);
     }
 
     /***
@@ -232,6 +232,11 @@ public class PosManager {
         DBManager.getInstance().updateLineInfo(lineInfoup);
     }
 
+    //获取所有线路信息
+    public List<AllLineInfo> getAllLineInfo() {
+        return DBManager.getInstance().getLineInfo();
+    }
+
     //更新票价
     public void updateStationInfo(LineInfoDown lineInfoDown, String line) {
         DBManager.getInstance().updatePrice(lineInfoDown, line);
@@ -239,11 +244,14 @@ public class PosManager {
     }
 
 
+    //插入新记录
     public void insertRecord(CardRecord cardRecord) {
         DBManager.getInstance().insert(cardRecord);
     }
 
+    //更新记录 主要用于上传
     public void updateRecord(List<CardRecord> cardRecord) {
         DBManager.getInstance().updateRecord(cardRecord);
     }
+
 }

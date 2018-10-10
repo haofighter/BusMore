@@ -382,7 +382,7 @@ public class LoopCardThread_SingleZB extends Thread {
     //实际票价计算 普通卡、学生卡、老年卡、免费卡、残疾人卡、员工卡、优惠卡2、优惠卡3、微信、银联、济南卡
     String getPayPrice(String type) {
         String coeff = PosManager.getInstance().getCarRunInfo().getCoefficient();
-        int price = PosManager.getInstance().getCarRunInfo().getPrice();
+        int price = PosManager.getInstance().getNowSigleTicketPrice().getPrice();
         int money_int;
 
         if (coeff.length() < 18) {

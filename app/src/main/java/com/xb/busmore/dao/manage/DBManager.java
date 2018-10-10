@@ -146,6 +146,7 @@ public class DBManager {
 
     CarRunInfo updateCarRunInfo(CarRunInfo carRunInfo) {
         carRunInfoDao.insertOrReplace(carRunInfo);
+        Log.i("MI  info", "updateCarRunInfo(DBManager.java149)" + carRunInfo.toString());
         return carRunInfo;
     }
 
@@ -209,14 +210,7 @@ public class DBManager {
      * @param line
      */
     void updateStation(LineInfoDown lineInfo, String line) {
-        try {
-            List<LineStation> lineStations = lineStationDao.queryBuilder().where(LineStationDao.Properties.Line.eq(line)).list();
-            if (lineStations.size() != 0) {
-                lineStationDao.deleteInTx(lineStations);
-            }
-        } catch (Exception e) {
-
-        }
+        lineStationDao.deleteAll();
         List<LineStation> allStation = new ArrayList<>();
         allStation.addAll(lineInfo.getDown_position());
         allStation.addAll(lineInfo.getUp_position());
@@ -231,14 +225,7 @@ public class DBManager {
      * @param line
      */
     void updatePrice(LineInfoDown lineInfo, String line) {
-        try {
-            List<LinePriceInfo> linePrices = linePriceInfoDao.queryBuilder().where(LinePriceInfoDao.Properties.Line.eq(line)).list();
-            if (linePrices.size() != 0) {
-                linePriceInfoDao.deleteInTx(linePrices);
-            }
-        } catch (Exception e) {
-            Log.e("DBManager", "updatePrice(DBManager.java:105)" + e.getMessage());
-        }
+        linePriceInfoDao.deleteAll();
         List<LinePriceInfo> prices = new ArrayList<>();
         prices.addAll(lineInfo.getDown_price());
         prices.addAll(lineInfo.getUp_price());
@@ -370,7 +357,7 @@ public class DBManager {
     LineStation getNowStation() {
         CarRunInfo carRunInfo = getCarRunInfo();
         UseConfig useConfig = getUseConfig();
-        LineStation lineStation = lineStationDao.queryBuilder().where(LineStationDao.Properties.Diraction.eq(carRunInfo.getDiraction()), LineStationDao.Properties.No.eq(useConfig.getStation())).limit(1).unique();
+        LineStation lineStation = lineStationDao.queryBuilder().where(LineStationDao.Properties.Line.eq(useConfig.getLine()), LineStationDao.Properties.Diraction.eq(carRunInfo.getDiraction()), LineStationDao.Properties.No.eq(useConfig.getStation())).limit(1).unique();
         if (lineStation == null) {
             return new LineStation(0l, 0, "", "未设置", 0, 0, 0, System.currentTimeMillis(), 0);
         }

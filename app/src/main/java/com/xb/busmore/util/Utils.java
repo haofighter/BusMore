@@ -32,8 +32,6 @@ public class Utils {
     static final String REG = "s[a-zA-z_0-9]{5,7}z[0-9]{2,3}x[/:+*_%&#]b[a-zA-z_0-9.-]{2,4}";
 
 
-
-
     public static boolean checkQR(long currentTime, long lastTime) {
         return currentTime - lastTime > 2000;
     }
@@ -110,7 +108,7 @@ public class Utils {
             byte temp[] = new byte[1024];
 
             int len = 0;
-            while ((len = inputStream.read(temp)) > 0){
+            while ((len = inputStream.read(temp)) > 0) {
                 sb.append(new String(temp, 0, len));
             }
             Log.d("msg", "readSaveFile: \n" + sb.toString());
@@ -331,7 +329,6 @@ public class Utils {
     }
 
 
-
     public static final String AL_APPID = "24640563-1";
 
     public static final String AL_APPSECRET = "fbaebeb6aeccca7244150d892cbd0183";
@@ -347,5 +344,21 @@ public class Utils {
         ConnectivityManager cm = (ConnectivityManager) App.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo current = cm.getActiveNetworkInfo();
         return current != null && current.isAvailable();
+    }
+
+
+    public static String str2three(String str) {
+        String endStr = "";
+        if (str.length() < 3) {
+            for (int i = 0; i < 3; i++) {
+                if (str.length() - i <= 0) {
+                    endStr += "0";
+                }
+            }
+            endStr += str;
+            return endStr;
+        } else {
+            return str.substring(0, 3);
+        }
     }
 }

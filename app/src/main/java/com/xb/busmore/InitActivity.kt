@@ -24,20 +24,19 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class InitActivity : BaseActivity() {
-    override fun rootView(): Int {
-        return R.layout.activity_init
-    }
-
     override fun rxMassage(message: RxMessage): Boolean {
         when (message.type) {
-            RxMessage.KEY_EVENT -> keyEvent(message.data as Int)
             RxMessage.LINE -> {
                 runOnUiThread { info.append("线路更新成功\n") }
                 true
             }
             else -> false
         }
-        return true
+        return super.rxMassage(message)
+    }
+
+    override fun rootView(): Int {
+        return R.layout.activity_init
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,31 +49,30 @@ class InitActivity : BaseActivity() {
 
 
     override fun keyEvent(pair: Int) {
-
     }
 
 
     //启动线程线程启动
     fun start() {
-        runOnUiThread {
-            CommonSharedPreferences.put("v", App.getInstance().getPakageVersion())
-            ThreadScheduledExecutorUtil.getInstance().service
-                    .scheduleAtFixedRate(LoopCardThread_SingleZB(), 1000, 300, TimeUnit.MILLISECONDS)
-            runOnUiThread { info.append("刷卡已启动\n") }
 
-            ThreadScheduledExecutorUtil.getInstance().service
-                    .scheduleAtFixedRate(LoopKeyEvent(), 1000, 200, TimeUnit.MILLISECONDS)
-            runOnUiThread { info.append("按键初始化成功\n") }
+        CommonSharedPreferences.put("v", App.getInstance().getPakageVersion())
+        ThreadScheduledExecutorUtil.getInstance().service
+                .scheduleAtFixedRate(LoopCardThread_SingleZB(), 1000, 300, TimeUnit.MILLISECONDS)
+        runOnUiThread { info.append("刷卡已启动\n") }
 
-            startService(Intent(this, LoopScanTask::class.java))
-            runOnUiThread { info.append("扫码已启动\n") }
+        ThreadScheduledExecutorUtil.getInstance().service
+                .scheduleAtFixedRate(LoopKeyEvent(), 1000, 200, TimeUnit.MILLISECONDS)
+        runOnUiThread { info.append("按键初始化成功\n") }
 
-            ThreadScheduledExecutorUtil.getInstance().service
-                    .scheduleAtFixedRate(UploadCardRecord(false), 2, 10, TimeUnit.MINUTES)
-            runOnUiThread { info.append("定时上传刷卡记录已开启\n") }
+        startService(Intent(this, LoopScanTask::class.java))
+        runOnUiThread { info.append("扫码已启动\n") }
 
-            Executors.newScheduledThreadPool(1).schedule({ goToMainActivity() }, 2, TimeUnit.SECONDS)
-        }
+        ThreadScheduledExecutorUtil.getInstance().service
+                .scheduleAtFixedRate(UploadCardRecord(false), 2, 10, TimeUnit.MINUTES)
+        runOnUiThread { info.append("定时上传刷卡记录已开启\n") }
+
+        Executors.newScheduledThreadPool(1).schedule({ goToMainActivity() }, 2, TimeUnit.SECONDS)
+
     }
 
 
@@ -96,7 +94,7 @@ class InitActivity : BaseActivity() {
         })
     }
 
-    private fun initAllLine() {
+    fun initAllLine() {
         //下载线路
         Executors.newScheduledThreadPool(1).schedule(object : Runnable {
             override fun run() {

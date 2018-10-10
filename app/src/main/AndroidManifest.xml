@@ -49,7 +49,9 @@
 
         <activity android:name=".moudle.activity.HomeActivity" />
         <activity android:name=".moudle.activity.SigninActivity" />
-        <activity android:name=".moudle.activity.MenuActivity"></activity>
+        <activity android:name=".moudle.activity.MenuActivity" />
+        <activity android:name=".moudle.activity.SelectLineActivity" />
+        <activity android:name=".moudle.activity.SetBusNumActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.xb.busmore.base
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +11,7 @@ import android.view.*
 import com.xb.busmore.R
 import com.xb.busmore.base.rx.RxBus
 import com.xb.busmore.base.rx.RxMessage
+import com.xb.busmore.moudle.activity.HomeActivity
 import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -43,9 +46,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-    var rx: Disposable
+    lateinit var rx: Disposable
 
     init {
+        init()
+    }
+
+    fun init() {
         rx = RxBus.getInstance().tObservable(RxMessage::class.java).filter {
             rxMassage(it)
         }.subscribeOn(Schedulers.io())
@@ -58,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     open fun rxMassage(message: RxMessage): Boolean {
         when (message.type) {
-            RxMessage.KEY_EVENT -> keyEvent(message.data as Int)
+            RxMessage.KEY_EVENT -> runOnUiThread { keyEvent(message.data as Int) }
         }
         return true
     }
@@ -75,5 +82,11 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         rx.dispose()
+    }
+
+
+    fun startActivity(java: Class<out Activity>) {
+        super.startActivity(Intent(this, java))
+        finish()
     }
 }

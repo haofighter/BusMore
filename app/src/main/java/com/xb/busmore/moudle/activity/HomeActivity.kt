@@ -25,6 +25,8 @@ import com.xb.busmore.util.task.TimeTask
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : BaseActivity(), BackCall {
+
+
     //填充主界面
     override fun rootView(): Int {
         return R.layout.activity_home
@@ -42,13 +44,15 @@ class HomeActivity : BaseActivity(), BackCall {
         }
     }
 
+    var timeTask: TimeTask = TimeTask(this)
     override fun onResume() {
         super.onResume()
-        if (timeTask.isInterrupted) {
-            timeTask.start()
-        } else {
-            timeTask.setFlag(true)
+        //计时器任务
+        if (timeTask != null) {
+            timeTask.setFlag(false)
         }
+        timeTask = TimeTask(this)
+        timeTask.start()
     }
 
     //backCall的回调方法
@@ -59,12 +63,9 @@ class HomeActivity : BaseActivity(), BackCall {
         }
     }
 
-    //计时器任务
-    var timeTask: TimeTask = TimeTask(this)
 
     //按键接收
     override fun keyEvent(key: Int) {
-        Log.i("MI  info", "(HomeActivity.java62)" + key)
         when (key) {
             PosKeyConfig.key_up_left -> {
                 if (PosManager.getInstance().carRunInfo.bianStatu == 1) {//手动变站
@@ -73,15 +74,27 @@ class HomeActivity : BaseActivity(), BackCall {
                         nowStation = 1
                     }
                     PosManager.getInstance().useConfig.station = nowStation
+                    refreshView()
                 } else {
-                    startActivity(Intent(this, MenuActivity::class.java))
+
                 }
             }
             PosKeyConfig.key_up_right
             -> {
+                if (PosManager.getInstance().carRunInfo.bianStatu == 1) {//手动变站
+                    var nowStation = PosManager.getInstance().useConfig.station - 1
+                    if (nowStation < 1) {
+                        nowStation = PosManager.getInstance().stationList.size
+                    }
+                    PosManager.getInstance().useConfig.station = nowStation
+                    refreshView()
+                } else {
+
+                }
             }
             PosKeyConfig.key_down_left
             -> {
+                startActivity(MenuActivity::class.java)
             }
             PosKeyConfig.key_down_right
             -> {
@@ -95,7 +108,7 @@ class HomeActivity : BaseActivity(), BackCall {
     }
 
     //用于界面刷新
-    fun refreshView() {
+    private fun refreshView() {
         var carRunInfo = PosManager.getInstance().carRunInfo
         var carConfig = PosManager.getInstance().carConfig
         var useConfig = PosManager.getInstance().useConfig
@@ -107,7 +120,8 @@ class HomeActivity : BaseActivity(), BackCall {
             driver_sign_out.visibility = View.GONE
             diraction_status.text = "变站模式:" + if (carRunInfo.bianStatu == 0) "自动变站" else "手动变站"
             gps_status.text = "GPS信号:" + carConfig.gps
-            device_status.text = "机具状态：" + if (carRunInfo.deviceStatus == 0) "上下车机" else if (carRunInfo.deviceStatus == 1) "上车机" else "下车机"
+            device_status.text = "机具状态:" + if (carRunInfo.deviceStatus == 0) "上下车机" else if (carRunInfo.deviceStatus == 1) "上车机" else "下车机"
+            diraction.text = "行驶方向:" + if (carRunInfo.diraction == 0) "上行" else "下行"
             line_info.text = useConfig.line + "     " + useConfig.line_chinese_name
             station_info.text = PosManager.getInstance().nowStation.name + "   " + useConfig.station
             ticket_info.text = "票价:" + Utils.fen2Yuan(PosManager.getInstance().nowSigleTicketPrice.price)
